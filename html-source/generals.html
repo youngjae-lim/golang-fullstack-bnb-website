@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+      crossorigin="anonymous"
+    />
+    <style>
+      .my-footer {
+        height: 3em;
+        background-color: #333;
+        margin-top: 2em;
+        padding: 1em;
+        color: #fff;
+        font-size: 80%;
+      }
+
+      .room-image {
+        max-width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- nav bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/index.html">erBnB</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about.html">About</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Rooms
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item" href="/generals.html"
+                    >General's Quarters</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/majors.html"
+                    >Major's Suite</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="/reservation.html"
+                tabindex="-1"
+                aria-disabled="true"
+                >Book Now</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="/contact.html"
+                tabindex="-1"
+                aria-disabled="true"
+                >Contact</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- container -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <img src="/static/images/generals-quarters.png" class="img-fluid img-thumbnail mx-auto d-block room-image" alt="room image">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h1 class="text-center mt-5">
+            General's Quarters
+          </h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident,
+            ea tenetur deserunt quae voluptatem repellendus minus, at
+            praesentium consequuntur quaerat sequi iusto officia ipsa quod.
+            Nobis necessitatibus eos ratione nam qui quam ipsa nihil aliquid
+            vitae porro voluptatem molestiae quae harum temporibus natus
+            asperiores expedita illum quo, reprehenderit sequi in? Similique
+            odit delectus est distinctio esse itaque quis at, ullam possimus
+            consequatur voluptatem vero soluta sit. Veritatis eveniet, quia
+            illum molestiae numquam exercitationem quas recusandae. Est vitae ea
+            similique reprehenderit pariatur, accusamus aspernatur natus
+            quibusdam magnam voluptas numquam ipsam ut consequatur, dolores
+            laboriosam illum cumque. Repellendus ratione nisi at id?
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-center">
+          <a href="/make-reservation-gq" class="btn btn-success"
+            >Check Availability</a
+          >
+        </div>
+      </div>
+      
+    </div>
+    <div class="row my-footer">
+      <div class="col">
+        Left
+      </div>
+      <div class="col">
+        Middle
+      </div>
+      <div class="col">
+        Right
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+      integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+      integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
