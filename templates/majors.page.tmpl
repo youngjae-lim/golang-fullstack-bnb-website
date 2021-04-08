@@ -1,0 +1,89 @@
+{{template "base" .}}
+
+{{define "content"}}
+<!-- container -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <img
+        src="/static/images/marjors-suite.png"
+        class="img-fluid img-thumbnail mx-auto d-block room-image"
+        alt="room image"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h1 class="text-center mt-5">Major's Suite</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, ea
+        tenetur deserunt quae voluptatem repellendus minus, at praesentium
+        consequuntur quaerat sequi iusto officia ipsa quod. Nobis necessitatibus
+        eos ratione nam qui quam ipsa nihil aliquid vitae porro voluptatem
+        molestiae quae harum temporibus natus asperiores expedita illum quo,
+        reprehenderit sequi in? Similique odit delectus est distinctio esse
+        itaque quis at, ullam possimus consequatur voluptatem vero soluta sit.
+        Veritatis eveniet, quia illum molestiae numquam exercitationem quas
+        recusandae. Est vitae ea similique reprehenderit pariatur, accusamus
+        aspernatur natus quibusdam magnam voluptas numquam ipsam ut consequatur,
+        dolores laboriosam illum cumque. Repellendus ratione nisi at id?
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-center">
+      <a id="check-availability-button" href="#!" class="btn btn-success"
+        >Check Availability</a
+      >
+    </div>
+  </div>
+</div>
+{{ end }}
+
+{{define "js"}}
+<script>
+  document
+    .getElementById('check-availability-button')
+    .addEventListener('click', function () {
+      let html = `
+            <form
+            id="check-availability"
+            action=""
+            method="POST"
+            novalidate
+            class="needs-validation"
+            >
+              <div class="row">
+                <div class="col">
+                  <div class="row" id="reservation-dates-modal">
+                    <div class="col">
+                      <input
+                        class="form-control"
+                        type="text"
+                        name="start"
+                        id="start"
+                        placeholder="Arrival"
+                        required
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="col">
+                      <input
+                        class="form-control"
+                        type="text"
+                        name="end"
+                        id="end"
+                        placeholder="Departure"
+                        required
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          `
+      attention.custom({ msg: html, title: 'Choose your dates' })
+    })
+</script>
+{{ end }}
