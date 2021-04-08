@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/config"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/handlers"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/handlers"
 )
 
 func routes(app *config.AppConfig) http.Handler {

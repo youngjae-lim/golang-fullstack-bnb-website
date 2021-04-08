@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/config"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/handlers"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/render"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/handlers"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/render"
 )
 
 const portNumber = ":8080"

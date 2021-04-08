@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/config"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/models"
-	"github.com/youngjae-lim/golang-fullstack-bnb-website/pkg/render"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/models"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/render"
 )
 
 // Repo is the repository used by the handlers
