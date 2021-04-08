@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/handlers"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/models"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/render"
 )
 
@@ -19,7 +21,9 @@ var session *scs.SessionManager
 
 // main is the main application function
 func main() {
-
+	// What am I going to put in the session
+	gob.Register(models.Reservation{})
+	
 	// change this to true when in production
 	app.InProduction = false
 
@@ -33,7 +37,7 @@ func main() {
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("cannot create template cache")
+		log.Fatal("cannot create template cache!")
 	}
 
 	app.TemplateCache = tc

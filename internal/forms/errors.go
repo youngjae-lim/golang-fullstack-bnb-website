@@ -1,6 +1,5 @@
 package forms
 
-
 type errors map[string][]string
 
 // Add adds an error message for a given form field
@@ -14,5 +13,5 @@ func (e errors) Get(field string) string {
 	if len(es) == 0 {
 		return ""
 	}
-	return es[0]
+	return es[0] // Return the first error message occured
 }
