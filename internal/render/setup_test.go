@@ -12,14 +12,13 @@ import (
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/models"
 )
 
-
 var session *scs.SessionManager
 var testApp config.AppConfig
 
 func TestMain(m *testing.M) {
 	// What am I going to put in the session
 	gob.Register(models.Reservation{})
-	
+
 	// change this to true when in production
 	testApp.InProduction = false
 
@@ -34,4 +33,20 @@ func TestMain(m *testing.M) {
 	app = &testApp
 
 	os.Exit(m.Run())
+}
+
+type myWriter struct{}
+
+func (tw *myWriter) Header() http.Header {
+	var h http.Header
+	return h
+}
+
+func (tw *myWriter) Write(b []byte) (int, error) {
+	length := len(b)
+	return length, nil
+}
+
+func (tw *myWriter) WriteHeader(i int) {
+
 }
