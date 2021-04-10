@@ -26,6 +26,7 @@ var theTests = []struct {
 	{"sa", "/search-availability", "GET", []postData{}, http.StatusOK},
 	{"contact", "/contact", "GET", []postData{}, http.StatusOK},
 	{"mr", "/make-reservation", "GET", []postData{}, http.StatusOK},
+	{"reservation-summary", "/reservation-summary", "GET", []postData{}, http.StatusOK},
 	{"post-search-avail", "/search-availability", "POST", []postData{
 		{key: "start", value: "2021-08-20"},
 		{key: "end", value: "2021-08-22"},
@@ -34,7 +35,7 @@ var theTests = []struct {
 		{key: "start", value: "2021-08-20"},
 		{key: "end", value: "2021-08-22"},
 	}, http.StatusOK},
-	{"make-reservation=post", "/make-reservation", "POST", []postData{
+	{"make-reservation-post", "/make-reservation", "POST", []postData{
 		{key: "first_name", value: "Youngjae"},
 		{key: "last_name", value: "Lim"},
 		{key: "email", value: "test@test.com"},
@@ -64,7 +65,7 @@ func TestHandlers(t *testing.T) {
 			for _, x := range e.params {
 				values.Add(x.key, x.value)
 			}
-			resp, err := ts.Client().PostForm(ts.URL + e.url, values)
+			resp, err := ts.Client().PostForm(ts.URL+e.url, values)
 			if err != nil {
 				t.Log(err)
 				t.Fatal(err)
