@@ -73,19 +73,22 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	sd := r.Form.Get("start_date")
 	ed := r.Form.Get("end_date")
 
-	layout := "2021-05-06"
-	startDate, err := time.Parse(layout, sd)
+	layout := "2006-01-02" // TODO: why does this have to be only 2006-01-02?
+	startDate, err := time.Parse(layout, sd) 
 	if err != nil {
 		helpers.ServerError(w, err)
+		return
 	}
 	endDate, err := time.Parse(layout, ed)
 	if err != nil {
 		helpers.ServerError(w, err)
+		return
 	}
 
 	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
 	if err != nil {
 		helpers.ServerError(w, err)
+		return
 	}
 
 	// want 2020-01-01 format based on 01/02 03:04:05PM '06 -0700
@@ -118,9 +121,24 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = m.DB.InsertReservation(reservation)
+	newReservationID, err := m.DB.InsertReservation(reservation)
 	if err != nil {
 		helpers.ServerError(w, err)
+		return
+	}
+
+	restriction := models.RoomRestriction{
+		StartDate: startDate,
+		EndDate: endDate,
+		RoomID: roomID,
+		ReservationID: newReservationID,
+		RestrictionID: 1, // TODO change this. hard-coded for now.
+	}
+
+	err = m.DB.InsertRoomRestriction(restriction)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
 	}
 
 	m.App.Session.Put(r.Context(), "reservation", reservation)
