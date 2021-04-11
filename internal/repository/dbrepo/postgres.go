@@ -12,8 +12,8 @@ func (m *postgresDBRepo) AllUsers() bool {
 }
 
 // InsertReservation inserts a reservation into the reservations table in the db
-func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error){
-	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	var newID int
@@ -34,7 +34,7 @@ func (m *postgresDBRepo) InsertReservation(res models.Reservation) (int, error){
 
 // InsertRoomRestriction inserts a room restriction into the room_restriction table in the db upon making a reservation
 func (m *postgresDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	stmt := `insert into room_restrictions
@@ -46,4 +46,33 @@ func (m *postgresDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {
 		return err
 	}
 	return nil
+}
+
+// SearchAvailabilityByDates returns true if available for roomID, false if not available
+func (m *postgresDBRepo) SearchAvailabilityByDates(start, end time.Time, roomID int) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var numRows int
+
+	query := `
+			select
+				count(id)
+			from
+				room_restrictions
+			where
+				room_id = $1 and
+				$2 < end_date and $3 > start_date` // this is same as saying my search start_date >= end_date OR my search end_date <= start_date
+
+	row := m.DB.QueryRowContext(ctx, query, roomID, start, end)
+	err := row.Scan(&numRows)
+	if err != nil {
+		return false, err
+	}
+
+	if numRows == 0 {
+		return true, nil
+	}
+
+	return false, nil
 }

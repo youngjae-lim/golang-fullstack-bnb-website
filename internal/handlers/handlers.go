@@ -70,6 +70,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// preprocess date format
 	sd := r.Form.Get("start_date")
 	ed := r.Form.Get("end_date")
 
@@ -90,8 +91,6 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-
-	// want 2020-01-01 format based on 01/02 03:04:05PM '06 -0700
 
 	reservation := models.Reservation{
 		FirstName: r.Form.Get("first_name"),
