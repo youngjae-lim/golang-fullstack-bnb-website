@@ -6,10 +6,13 @@ import (
 	"net/http"
 
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/driver"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/forms"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/helpers"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/models"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/render"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/repository"
+	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/repository/dbrepo"
 )
 
 // Repo is the repository used by the handlers
@@ -18,12 +21,14 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB repository.DatabaseRepo
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB: dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
