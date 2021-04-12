@@ -45,7 +45,7 @@ func main() {
 }
 
 func run() (*driver.DB, error) {
-	// What am I going to put in the session
+	// To put in the session
 	gob.Register(models.Reservation{})
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
