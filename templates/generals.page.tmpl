@@ -93,6 +93,7 @@
             format: 'yyyy-mm-dd',
             showOnFocus: false,
             buttonClass: 'btn',
+            minDate: new Date(),
           })
         },
         callback: function (result) {
@@ -101,6 +102,7 @@
           let form = document.getElementById('check-availability')
           let formData = new FormData(form)
           formData.append('csrf_token', '{{.CSRFToken}}')
+          formData.append("room_id", "1") // TODO: should not be hard-coded
 
           fetch('/search-availability-json', {
             method: 'POST',
@@ -108,9 +110,11 @@
           })
             .then((response) => response.json())
             .then((data) => {
-              console.log(data)
-              console.log(data.ok)
-              console.log(data.message)
+              if (data.ok) {
+                console.log("room is avaiable")
+              } else {
+                console.log("room is not available")
+              }
             })
         },
       })
