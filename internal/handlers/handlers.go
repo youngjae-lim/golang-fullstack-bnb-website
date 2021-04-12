@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/driver"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/forms"
@@ -202,6 +203,27 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "choose-room.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
+}
+
+func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
+	roomID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res.RoomID = roomID
+
+	m.App.Session.Put(r.Context(), "reservation", res)
+
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+
 }
 
 type jsonResponse struct {
