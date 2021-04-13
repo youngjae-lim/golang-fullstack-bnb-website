@@ -102,7 +102,7 @@
           let form = document.getElementById('check-availability')
           let formData = new FormData(form)
           formData.append('csrf_token', '{{.CSRFToken}}')
-          formData.append("room_id", "1") // TODO: should not be hard-coded
+          formData.append('room_id', '1') // TODO: should not be hard-coded
 
           fetch('/search-availability-json', {
             method: 'POST',
@@ -111,9 +111,24 @@
             .then((response) => response.json())
             .then((data) => {
               if (data.ok) {
-                console.log("room is avaiable")
+                attention.custom({
+                  icon: 'success',
+                  msg:
+                    '<p>Room is available!</p>' +
+                    '<p><a href="/book-room?id=' +
+                    data.room_id +
+                    '&s=' +
+                    data.start_date +
+                    '&e=' +
+                    data.end_date +
+                    '" class="btn btn-primary">' +
+                    'Book Now!</a></p>',
+                  showConfirmButton: false,
+                })
               } else {
-                console.log("room is not available")
+                attention.error({
+                  msg: 'No availability',
+                })
               }
             })
         },
