@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -277,6 +278,43 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//*******************************************
+	// send email notification to guest
+	//*******************************************
+	htmlMessage := fmt.Sprintf(`
+		<strong>Reservation Confirmation</strong><br>
+		Dear %s, <br>
+		This is to confirm your reservation of %s from %s to %s.
+	`, res.Room.RoomName, res.FirstName, res.StartDate.Format("2006-01-02"), res.EndDate.Format("2006-01-02"))
+
+	msg := models.MailData{
+		To:       res.Email,
+		From:     "me@here.com",
+		Subject:  "Reservation Confirmation",
+		Content:  htmlMessage,
+		Template: "basic.html",
+	}
+
+	m.App.MailChan <- msg
+
+	//*******************************************
+	// send email notification to property owner
+	//*******************************************
+	htmlMessage = fmt.Sprintf(`
+		<strong>Reservation Notification</strong><br>
+		A reservation has been made for %s from %s to %s.
+	`, res.Room.RoomName, res.StartDate.Format("2006-01-02"), res.EndDate.Format("2006-01-02"))
+
+	msg = models.MailData{
+		To:       "me@here.com",
+		From:     "me@here.com",
+		Subject:  "Reservation Notification",
+		Content:  htmlMessage,
+		Template: "basic.html",
+	}
+
+	m.App.MailChan <- msg
+
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 
 }
@@ -323,8 +361,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	// parse request body
 	err := r.ParseForm()
 	if err != nil {
-		resp := jsonResponse {
-			OK: false,
+		resp := jsonResponse{
+			OK:      false,
 			Message: "Internal server error",
 		}
 
@@ -342,8 +380,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
-		resp := jsonResponse {
-			OK: false,
+		resp := jsonResponse{
+			OK:      false,
 			Message: "Arrival date invalid",
 		}
 
@@ -355,8 +393,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	endDate, err := time.Parse(layout, ed)
 	if err != nil {
-		resp := jsonResponse {
-			OK: false,
+		resp := jsonResponse{
+			OK:      false,
 			Message: "Departure date invalid",
 		}
 
@@ -368,8 +406,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
 	if err != nil {
-		resp := jsonResponse {
-			OK: false,
+		resp := jsonResponse{
+			OK:      false,
 			Message: "Room ID invalid",
 		}
 
@@ -381,8 +419,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	available, err := m.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomID)
 	if err != nil {
-		resp := jsonResponse {
-			OK: false,
+		resp := jsonResponse{
+			OK:      false,
 			Message: "Error connecting to database",
 		}
 
