@@ -25,7 +25,7 @@
           {{with .Form.Errors.Get "password"}}
           <label class="text-danger">{{.}}</label>
           {{ end }}
-          <input type="text" name="password" id="password"
+          <input type="password" name="password" id="password"
           class="form-control {{with .Form.Errors.Get "password"}} is-invalid
           {{ end }}" required autocomplete="off" value="" />
         </div>
