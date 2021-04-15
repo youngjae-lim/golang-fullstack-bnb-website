@@ -4,34 +4,33 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1>This is the Login Page.</h1>
+      <h1>Login</h1>
+
       <!-- Login Form -->
-      <form action="/user/login" method="POST" class="" novalidate>
-        <!-- hidden inputs -->
-        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
-        <!-- email-->
-        <div class="form-group mt-2">
+      <form>
+        <div class="form-group mt-3">
           <label for="email">Email</label>
           {{with .Form.Errors.Get "email"}}
           <label class="text-danger">{{.}}</label>
           {{ end }}
-          <input type="email" name="email" id="email" class="form-control
-          {{with .Form.Errors.Get "email"} is-invalid {{ end }}" required
-          autocomplete="off" value="" />
+          <input type="text" name="email" id="email"
+          class="form-control {{with .Form.Errors.Get "email"}} is-invalid
+          {{ end }}" required autocomplete="off" value="" />
         </div>
-        <!-- password -->
+
         <div class="form-group mt-2">
           <label for="password">Password</label>
           {{with .Form.Errors.Get "password"}}
           <label class="text-danger">{{.}}</label>
           {{ end }}
-          <input type="password" name="password" id="password"
-          class="form-control
-          {{with .Form.Errors.Get "password"}} is-invalid {{ end }}" required
-          autocomplete="off" value="" />
+          <input type="text" name="password" id="password"
+          class="form-control {{with .Form.Errors.Get "password"}} is-invalid
+          {{ end }}" required autocomplete="off" value="" />
         </div>
+
         <hr />
-        <input type="submit" class="btn btn-primary" value="Submit" />
+        <!-- submit button -->
+        <input type="submit" class="btn btn-primary" value="Login" />
       </form>
     </div>
   </div>
