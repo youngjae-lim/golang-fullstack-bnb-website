@@ -7,7 +7,7 @@
       <h1>Login</h1>
 
       <!-- Login Form -->
-      <form method="POST" action="/user/login">
+      <form method="POST" action="/user/login" novalidate>
         <!-- hidden inputs -->
         <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
         <div class="form-group mt-3">
