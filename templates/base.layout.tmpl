@@ -1,6 +1,7 @@
 {{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
+  <!-- Head -->
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -25,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
   </head>
   <body>
-    <!-- nav bar -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">erBnB</a>
@@ -92,13 +93,30 @@
             </li>
             <li class="nav-item">
               {{if eq .IsAuthenticated 1}}
-              <a
-                class="nav-link"
-                href="/user/logout"
-                tabindex="-1"
-                aria-disabled="true"
-                >Logout</a
-              >
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Admin
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item" href="/admin/dashboard"
+                      >Dashboard</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/user/logout"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+              </li>
               {{else}}
               <a
                 class="nav-link"
@@ -114,10 +132,12 @@
       </div>
     </nav>
 
+    <!-- Content -->
     {{block "content" .}}
 
     {{ end }}
 
+    <!-- Footer -->
     <div class="row my-footer">
       <div class="col">Left</div>
       <div class="col">Middle</div>
@@ -139,6 +159,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="/static/js/app.js"></script>
 
+    <!-- Scripts -->
     {{block "js" .}}
 
     {{ end }}
