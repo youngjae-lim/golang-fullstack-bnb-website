@@ -578,6 +578,38 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 	})
 }
 
+// AdminReservationDetail shows a reservation detail in the admin panel
+func (m *Repository) AdminReservationDetail(w http.ResponseWriter, r *http.Request) {
+	// Get {src} and {id} from URI strings in the Edit link
+	uriStrings := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(uriStrings[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	src := uriStrings[3]
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	reservation, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(w, r, "admin-reservation-detail.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+		Data:      data,
+		Form:      forms.New(nil),
+	})
+}
+
+// AdminReservationsCalendar shows reservation calendar in the admin panel
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }

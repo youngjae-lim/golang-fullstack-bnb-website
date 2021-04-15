@@ -41,13 +41,14 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	// protected routes
-	mux.Route("/admin", func(mux chi.Router){
+	mux.Route("/admin", func(mux chi.Router) {
 		//mux.Use(Auth) // TODO: Enable this in the test and production.
 
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 		mux.Get("/reservations-new", handlers.Repo.AdminNewReservations)
 		mux.Get("/reservations-all", handlers.Repo.AdminAllReservations)
 		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
+		mux.Get("/reservations/{src}/{id}", handlers.Repo.AdminReservationDetail)
 	})
 
 	return mux

@@ -254,19 +254,19 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 	for rows.Next() {
 		var i models.Reservation
 		err := rows.Scan(
-				&i.ID,       
-				&i.FirstName, 
-				&i.LastName,  
-				&i.Email,     
-				&i.Phone,     
-				&i.StartDate, 
-				&i.EndDate,   
-				&i.RoomID,    
-				&i.CreatedAt, 
-				&i.UpdatedAt,
-				&i.Processed,
-				&i.Room.ID,
-				&i.Room.RoomName,      
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.StartDate,
+			&i.EndDate,
+			&i.RoomID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Processed,
+			&i.Room.ID,
+			&i.Room.RoomName,
 		)
 		if err != nil {
 			return reservations, err
@@ -280,7 +280,6 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 
 	return reservations, nil
 }
-
 
 // AllNewReservations returns a slice of all reservations
 func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
@@ -306,19 +305,19 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 	for rows.Next() {
 		var i models.Reservation
 		err := rows.Scan(
-				&i.ID,       
-				&i.FirstName, 
-				&i.LastName,  
-				&i.Email,     
-				&i.Phone,     
-				&i.StartDate, 
-				&i.EndDate,   
-				&i.RoomID,    
-				&i.CreatedAt, 
-				&i.UpdatedAt, 
-				&i.Processed,
-				&i.Room.ID,
-				&i.Room.RoomName,      
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.StartDate,
+			&i.EndDate,
+			&i.RoomID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Processed,
+			&i.Room.ID,
+			&i.Room.RoomName,
 		)
 		if err != nil {
 			return reservations, err
@@ -331,4 +330,42 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 	}
 
 	return reservations, nil
+}
+
+// GetReservationByID returns a single reservation detail by reservation id
+func (m *postgresDBRepo) GetReservationByID(id int) (models.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var reservation models.Reservation
+
+	query := `
+			select r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date, r.end_date, r.room_id, r.created_at, r.updated_at, r.processed,
+			rm.id, rm.room_name
+			from reservations r
+			left join rooms rm on (r.room_id = rm.id)
+			where r.id = $1
+	`
+
+	row := m.DB.QueryRowContext(ctx, query, id)
+	err := row.Scan(
+		&reservation.ID,
+		&reservation.FirstName,
+		&reservation.LastName,
+		&reservation.Email,
+		&reservation.Phone,
+		&reservation.StartDate,
+		&reservation.EndDate,
+		&reservation.RoomID,
+		&reservation.CreatedAt,
+		&reservation.UpdatedAt,
+		&reservation.Processed,
+		&reservation.Room.ID,
+		&reservation.Room.RoomName,
+	)
+	if err != nil {
+		return reservation, err
+	}
+
+	return reservation, nil
 }
