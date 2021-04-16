@@ -609,6 +609,50 @@ func (m *Repository) AdminReservationDetail(w http.ResponseWriter, r *http.Reque
 	})
 }
 
+// AdminPostReservationDetail...
+func (m *Repository) AdminPostReservationDetail(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	// Get {src} and {id} from URI strings in the Edit link
+	uriStrings := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(uriStrings[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	src := uriStrings[3] // new or all
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	reservation, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	// TODO: add validation
+
+	reservation.FirstName = r.Form.Get("first_name")
+	reservation.LastName = r.Form.Get("last_name")
+	reservation.Email = r.Form.Get("email")
+	reservation.Phone = r.Form.Get("phone")
+
+	err = m.DB.UpdateReservation(reservation)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Changes saved!")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+}
+
 // AdminReservationsCalendar shows reservation calendar in the admin panel
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})

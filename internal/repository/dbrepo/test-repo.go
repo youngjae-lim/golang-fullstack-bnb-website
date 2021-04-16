@@ -136,7 +136,6 @@ func (m *testDBRepo) AllNewReservations() ([]models.Reservation, error) {
 	return reservations, nil
 }
 
-
 // GetReservationByID returns a single reservation detail by reservation id
 func (m *testDBRepo) GetReservationByID(id int) (models.Reservation, error) {
 	var reservation models.Reservation
@@ -148,7 +147,6 @@ func (m *testDBRepo) GetReservationByID(id int) (models.Reservation, error) {
 func (m *testDBRepo) UpdateReservation(u models.Reservation) error {
 	return nil
 }
-
 
 // DeleteReservation deletes a reservation by id
 func (m *testDBRepo) DeleteReservation(id int) error {
