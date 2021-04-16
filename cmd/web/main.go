@@ -49,11 +49,12 @@ func main() {
 }
 
 func run() (*driver.DB, error) {
-	// To put in the session
+	// To put in the session, register here!
 	gob.Register(models.Reservation{})
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan

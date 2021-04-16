@@ -702,7 +702,7 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	// get the first and last days of the month
 	currentYear, currentMonth, _ := now.Date()
 	currentLocation := now.Location()
-	firstOfMonth :=time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0,currentLocation)
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
 	lastOfMonth := firstOfMonth.AddDate(0, 1, -1) // add 1 month and then subtracts 1 day
 
 	intMap := make(map[string]int)
@@ -716,10 +716,48 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 
 	data["rooms"] = rooms
 
+	for _, x := range rooms {
+		// create maps
+		reservationMap := make(map[string]int)
+		blockMap := make(map[string]int)
+
+		// initialize maps with zero values, which mean that there are no reservations or blocks
+		for d := firstOfMonth; !d.After(lastOfMonth); d = d.AddDate(0, 0, 1) {
+			reservationMap[d.Format("2006-01-2")] = 0
+			blockMap[d.Format("2006-01-2")] = 0
+		}
+
+		// get all the restrictions for the current room for the current month
+		restrictions, err := m.DB.GetRestrictionsForRoomByDate(x.ID, firstOfMonth, lastOfMonth)
+		if err != nil {
+			helpers.ServerError(w, err)
+			return
+		}
+
+		// for each room, mark dates as reservation or block
+		for _, y := range restrictions { // for each restriction
+			if y.ReservationID > 0 {
+				// it's a reservation
+				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
+					reservationMap[d.Format("2006-01-2")] = y.ReservationID
+				}
+			} else {
+				// it's a block by a property owner
+				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
+					blockMap[d.Format("2006-01-2")] = y.RestrictionID
+				}
+			}
+		}
+		data[fmt.Sprintf("reservation_map_%d", x.ID)] = reservationMap
+		data[fmt.Sprintf("block_map_%d", x.ID)] = blockMap
+
+		m.App.Session.Put(r.Context(), fmt.Sprintf("block_map_%d", x.ID), blockMap)
+	}
+
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
-		IntMap: intMap,
-		Data: data,
+		IntMap:    intMap,
+		Data:      data,
 	})
 }
 

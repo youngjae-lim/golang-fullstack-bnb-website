@@ -8,19 +8,24 @@ Reservations Calendar
     {{$now := index .Data "now"}}
     {{$rooms := index .Data "rooms"}}
     {{$daysInMonth := index .IntMap "days_in_month"}}
+    {{$curMonth := index .StringMap "this_month"}}
+    {{$curYear := index .StringMap "this_month_year"}}
+
     <div class="col-md-12">
 
+        <!-- current month & year -->
         <div class="text-center">
-            <!-- current month year -->
             <h3>
             {{formatDate $now "January"}} {{formatDate $now "2006"}}
             </h3>
         </div>
 
+        <!-- prev month -->
         <div class="float-left">
             <a class="btn btn-sm btn-outline-secondary" href="/admin/reservations-calendar?y={{index .StringMap "last_month_year"}}&m={{index .StringMap "last_month"}}" >&lt;&lt;</a>
         </div>
 
+        <!-- next month -->
         <div class="float-right">
             <a class="btn btn-sm btn-outline-secondary" href="/admin/reservations-calendar?y={{index .StringMap "next_month_year"}}&m={{index .StringMap "next_month"}}" >&gt;&gt;</a>
         </div>
@@ -35,6 +40,8 @@ Reservations Calendar
 
             <div class="table-response">
                 <table class="table table-bordered table-sm">
+                    
+                    <!-- day of month -->
                     <tr class="table-dark">
                         {{range $index := iterate $daysInMonth}}
                             <td class="text-center">
@@ -43,6 +50,7 @@ Reservations Calendar
                         {{end}}
                     </tr>
 
+                    <!-- checkbox -->
                     <tr>
                         {{range $index := iterate $daysInMonth}}
                             <td class="text-center">
