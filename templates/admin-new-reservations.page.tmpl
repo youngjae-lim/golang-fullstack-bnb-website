@@ -22,6 +22,7 @@ All New Reservations
         <th>ID</th>
         <th>First Name</th>
         <th>Last Name</th>
+        <th>Email</th>
         <th>Room</th>
         <th>Arrival</th>
         <th>Departure</th>
@@ -35,6 +36,7 @@ All New Reservations
         <td>{{.ID}}</td>
         <td>{{.FirstName}}</td>
         <td>{{.LastName}}</td>
+        <td>{{.Email}}</td>
         <td>{{.Room.RoomName}}</td>
         <td>{{ humanDate .StartDate }}</td>
         <td>{{ humanDate .EndDate }}</td>

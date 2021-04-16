@@ -18,6 +18,11 @@
       rel="stylesheet"
       href="/static/admin/vendors/base/vendor.bundle.base.css"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/notie/dist/notie.min.css"
+    />
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -34,6 +39,10 @@
 
       label {
         font-weight: bold;
+      }
+
+      .notie-container {
+        z-index: 50000;
       }
     </style>
 
@@ -180,16 +189,50 @@
     <script src="/static/admin/js/hoverable-collapse.js"></script>
     <script src="/static/admin/js/template.js"></script>
     <script src="/static/admin/js/todolist.js"></script>
+    <script src="https://unpkg.com/notie"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="/static/js/app.js"></script>
     <!-- endinject -->
     <!-- Custom js for this page-->
     <script src="/static/admin/js/dashboard.js"></script>
+    <
     <!-- End custom js for this page-->
 
     <!-- Block Javascript To Be Injected -->
     {{block "js" . }}
 
     {{ end }}
+    <script>
+      let attention = Prompt()
 
+      function notify(msg, msgType) {
+        notie.alert({
+          text: msg,
+          type: msgType,
+        })
+      }
+
+      function notifyModal(title, text, icon, confirmButtonText) {
+        Swal.fire({
+          title: title,
+          html: text,
+          icon: icon,
+          confirmButtonText: confirmButtonText,
+        })
+      }
+
+      {{with .Error}}
+      notify("{{.}}", "error")
+      {{end}}
+
+      {{with .Flash}}
+      notify("{{.}}", "success")
+      {{end}}
+
+      {{with .Warning}}
+      notify("{{.}}", "warning")
+      {{end}}
+    </script>
   </body>
 </html>
 

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	//"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/config"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/driver"
 	"github.com/youngjae-lim/golang-fullstack-bnb-website/internal/forms"
@@ -636,12 +637,25 @@ func (m *Repository) AdminPostReservationDetail(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	// TODO: add validation
-
 	reservation.FirstName = r.Form.Get("first_name")
 	reservation.LastName = r.Form.Get("last_name")
 	reservation.Email = r.Form.Get("email")
 	reservation.Phone = r.Form.Get("phone")
+
+	// TODO: add validation
+	// form := forms.New(r.PostForm)
+	// form.Required("email")
+	// form.IsEmail("email")
+	// if !form.Valid() {
+	// 	data := make(map[string]interface{})
+	// 	data["reservation"] = reservation
+
+	// 	render.Template(w, r, "admin-reservation-detail.page.tmpl", &models.TemplateData{
+	// 		StringMap: stringMap,
+	// 		Data:      data,
+	// 		Form:      form,
+	// 	})
+	// }
 
 	err = m.DB.UpdateReservation(reservation)
 	if err != nil {
@@ -656,4 +670,22 @@ func (m *Repository) AdminPostReservationDetail(w http.ResponseWriter, r *http.R
 // AdminReservationsCalendar shows reservation calendar in the admin panel
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
+}
+
+
+// AdminProcessReservation marks a reservation as processed
+func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+
+	err := m.DB.UpdateProcessedForReservation(id, 1)
+	if err != nil {
+		log.Println(err)
+		helpers.ServerError(w, err)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed!")
+
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 }
