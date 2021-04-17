@@ -761,6 +761,11 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	})
 }
 
+// AdminPostReservationsCalendar handles post of reservation calendar
+func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	log.Println("works")
+}
+
 // AdminProcessReservation marks a reservation as processed
 func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
