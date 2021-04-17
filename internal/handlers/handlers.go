@@ -743,9 +743,10 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 				}
 			} else {
 				// it's a block by a property owner
-				for d := y.StartDate; !d.Equal(y.EndDate); d = d.AddDate(0, 0, 1) {
-					blockMap[d.Format("2006-01-2")] = y.ID
-				}
+				// assume that a block by a property owner is done for each day through the admin panel.
+				d := y.StartDate
+				blockMap[d.Format("2006-01-2")] = y.ID
+
 			}
 		}
 		data[fmt.Sprintf("reservation_map_%d", x.ID)] = reservationMap
@@ -791,9 +792,15 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 			val, ok := curMap[key]
 			if ok {
 				if val > 0 {
+					// example: remove_block_1_2021-05-1
 					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, key)) {
 						// delete the restriction by id
-						log.Println("would delete block", value)
+						err := m.DB.DeleteBlockByID(value)
+						if err != nil {
+							log.Println(err)
+							helpers.ServerError(w, err)
+							return
+						}
 					}
 				}
 			}
@@ -802,15 +809,20 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 
 	// handle adding new blocks
 	for name, _ := range r.PostForm {
-		log.Println(name)
 		if strings.HasPrefix(name, "add_block") {
+			// example: add_block_1_2021-05-9
 			exploded := strings.Split(name, "_")
 			roomID, _ := strconv.Atoi(exploded[2])
+			startDate, _ := time.Parse("2006-01-2", exploded[3])
 			// insert a new block
-			log.Println("would insert block for room id", roomID, "for date", exploded[3])
+			err := m.DB.InsertBlockForRoom(roomID, startDate)
+			if err != nil {
+				log.Println(err)
+				helpers.ServerError(w, err)
+				return
+			}
 		}
 	}
-
 
 	m.App.Session.Put(r.Context(), "flash", "Changes saved!")
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%d&m=%d", year, month), http.StatusSeeOther)
