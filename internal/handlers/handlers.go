@@ -734,17 +734,17 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		// for each room, mark dates as reservation or block
+		// for each room, mark dates as reservation or restriction
 		for _, y := range restrictions { // for each restriction
 			if y.ReservationID > 0 {
 				// it's a reservation
-				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
+				for d := y.StartDate; !d.Equal(y.EndDate); d = d.AddDate(0, 0, 1) {
 					reservationMap[d.Format("2006-01-2")] = y.ReservationID
 				}
 			} else {
 				// it's a block by a property owner
-				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
-					blockMap[d.Format("2006-01-2")] = y.RestrictionID
+				for d := y.StartDate; !d.Equal(y.EndDate); d = d.AddDate(0, 0, 1) {
+					blockMap[d.Format("2006-01-2")] = y.ID
 				}
 			}
 		}
