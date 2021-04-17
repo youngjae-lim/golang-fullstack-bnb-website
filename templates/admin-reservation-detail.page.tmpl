@@ -14,6 +14,7 @@
         <strong>Arrival: </strong> {{humanDate $res.StartDate}} <br>
         <strong>Departure: </strong> {{humanDate $res.EndDate}} <br>
         <strong>Room: </strong> {{$res.Room.RoomName}} <br>
+        <strong>Processed: </strong>{{if eq $res.Processed 1}} Yes {{else}} No {{end}} <br>
       </p>
 
       <form action="/admin/reservations/{{$src}}/{{$res.ID}}" method="POST" class="" novalidate>
@@ -69,7 +70,7 @@
           {{else}}
             <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
           {{end}}
-          <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as Processed</a>
+          <a href="#!" class="btn btn-info {{if eq $res.Processed 1}} disabled {{else}} {{end}} " onclick="processRes({{$res.ID}})">Mark as Processed</a>
         </div>
         <div class="float-right">
           <a href="#!" class="btn btn-danger" onclick="deleteRes({{$res.ID}})">Delete</a>
