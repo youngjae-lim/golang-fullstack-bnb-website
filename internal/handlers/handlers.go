@@ -87,7 +87,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse form!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -100,13 +100,13 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	startDate, err := time.Parse(layout, start)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse start date!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 	endDate, err := time.Parse(layout, end)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse end date!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -114,7 +114,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	rooms, err := m.DB.SearchAvailabilityForAllRooms(startDate, endDate)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't get availability for rooms")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -157,14 +157,14 @@ func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 	roomID, err := strconv.Atoi(exploded[2])
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "missing url parameter")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
 		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -183,14 +183,14 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
 		m.App.Session.Put(r.Context(), "error", "can't get a reservation from session")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
 	// Get a room name by id
 	room, err := m.DB.GetRoomByID(res.RoomID)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't find a room")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
 	res.Room.RoomName = room.RoomName
@@ -222,14 +222,14 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
 		m.App.Session.Put(r.Context(), "error", "can't get a reservation from session")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	err := r.ParseForm()
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse the form")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -241,6 +241,14 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// Put the updated reservation data back into the session
 	m.App.Session.Put(r.Context(), "reservation", res)
 
+	// cast time.Time date format to YYYY-MM-DD
+	sd := res.StartDate.Format("2006-01-02")
+	ed := res.EndDate.Format("2006-01-02")
+
+	stringMap := make(map[string]string)
+	stringMap["start_date"] = sd
+	stringMap["end_date"] = ed
+
 	form := forms.New(r.PostForm)
 
 	// Checks for form validation
@@ -251,10 +259,11 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["reservation"] = res
-		http.Error(w, "form data invalid!", http.StatusSeeOther)
+		//http.Error(w, "form data invalid!", http.StatusSeeOther)
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
+			StringMap: stringMap,
 		})
 		return
 	}
@@ -262,7 +271,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	newReservationID, err := m.DB.InsertReservation(res)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't insert reservation into database")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -271,13 +280,13 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		EndDate:       res.EndDate,
 		RoomID:        res.RoomID,
 		ReservationID: newReservationID,
-		RestrictionID: 1, // TODO change this. hard-coded for now.
+		RestrictionID: 1, // RestrictionID 1 is a reservation!
 	}
 
 	err = m.DB.InsertRoomRestriction(restriction)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't insert room restriction into database")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -327,7 +336,7 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
 		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -463,14 +472,14 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse start date!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	endDate, err := time.Parse(layout, ed)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse end date!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -478,7 +487,7 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 	room, err := m.DB.GetRoomByID(roomID)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "Can't get room from db!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -523,14 +532,13 @@ func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 
 	id, _, err := m.DB.Authenticate(email, password)
 	if err != nil {
-		log.Println(err)
 		m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
 		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 		return
 	}
 
 	m.App.Session.Put(r.Context(), "user_id", id)
-	m.App.Session.Put(r.Context(), "flash", "Logged in successfully!!") // TODO: this message keeps popping up whenever we go to the previous page by hitting a back button while being logged in. Please fix this!
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully!!") // TODO: this message keeps popping up whenever we go back to the home("/") page by hitting a back button while being logged in. Please fix this!
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -848,14 +856,12 @@ func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Requ
 
 	err := m.DB.UpdateProcessedForReservation(id, 1)
 	if err != nil {
-		log.Println(err)
 		helpers.ServerError(w, err)
 		return
 	}
 
 	year := r.URL.Query().Get("y")
 	month := r.URL.Query().Get("m")
-	log.Println(year)
 
 	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed!")
 

@@ -42,7 +42,7 @@ func routes(app *config.AppConfig) http.Handler {
 
 	// protected routes
 	mux.Route("/admin", func(mux chi.Router) {
-		//mux.Use(Auth) // TODO: Enable this in the test and production.
+		mux.Use(Auth)
 
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 

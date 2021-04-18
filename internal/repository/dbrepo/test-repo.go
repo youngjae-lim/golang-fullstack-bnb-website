@@ -119,7 +119,10 @@ func (m *testDBRepo) UpdateUser(u models.User) error {
 
 // Authenticate authenticates a user
 func (m *testDBRepo) Authenticate(email, unhashedPassword string) (int, string, error) {
-	return 1, "", nil
+	if email == "me@here.com" {
+		return 1, "", nil
+	}
+	return 0, "", errors.New("some error")
 }
 
 // AllReservations returns a slice of all reservations
@@ -139,6 +142,10 @@ func (m *testDBRepo) AllNewReservations() ([]models.Reservation, error) {
 // GetReservationByID returns a single reservation detail by reservation id
 func (m *testDBRepo) GetReservationByID(id int) (models.Reservation, error) {
 	var reservation models.Reservation
+
+	if id > 1 {
+		return reservation, errors.New("some error")
+	}
 
 	return reservation, nil
 }
