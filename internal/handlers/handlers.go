@@ -92,6 +92,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get user-searched arrival date and departure date
+	// TODO: A user should not be allowed to book a same day arrival & departure
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 
