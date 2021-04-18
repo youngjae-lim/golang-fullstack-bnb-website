@@ -45,14 +45,18 @@ func routes(app *config.AppConfig) http.Handler {
 		//mux.Use(Auth) // TODO: Enable this in the test and production.
 
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
+
 		mux.Get("/reservations-new", handlers.Repo.AdminNewReservations)
 		mux.Get("/reservations-all", handlers.Repo.AdminAllReservations)
+
 		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
 		mux.Post("/reservations-calendar", handlers.Repo.AdminPostReservationsCalendar)
-		mux.Get("/reservations/{src}/{id}", handlers.Repo.AdminReservationDetail)
+
+		mux.Get("/reservations/{src}/{id}/show", handlers.Repo.AdminReservationDetail)
 		mux.Post("/reservations/{src}/{id}", handlers.Repo.AdminPostReservationDetail)
-		mux.Get("/process-reservation/{src}/{id}", handlers.Repo.AdminProcessReservation)
-		mux.Get("/delete-reservation/{src}/{id}", handlers.Repo.AdminDeleteReservation)
+
+		mux.Get("/process-reservation/{src}/{id}/do", handlers.Repo.AdminProcessReservation)
+		mux.Get("/delete-reservation/{src}/{id}/do", handlers.Repo.AdminDeleteReservation)
 	})
 
 	return mux
