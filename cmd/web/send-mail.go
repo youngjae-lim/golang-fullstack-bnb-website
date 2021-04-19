@@ -15,10 +15,11 @@ func listenForMail() {
 	go func() {
 		for {
 			msg := <-app.MailChan
-			sendMsg(msg)
+			sendMsg(msg) //TODO: won't work after deploying to the production
 		}
 	}()
 }
+
 
 func sendMsg(m models.MailData) {
 	server := mail.NewSMTPClient()
